@@ -3,13 +3,26 @@ import { CiFacebook } from "react-icons/ci";
 import qZone1 from "../../../assets/qZone1.png";
 import qZone2 from "../../../assets/qZone2.png";
 import qZone3 from "../../../assets/qZone3.png";
+import { useContext } from "react";
+import { AuthContext } from "../../../providers/AuthProvider";
 
 const RightSideNav = () => {
+  const {signInWithGoogle} = useContext(AuthContext)
+  const handleGoogleSignIn =()=>{
+    signInWithGoogle()
+     .then(result=>{
+       console.log(result.user);
+     })
+     .catch(error=>{
+       console.error(error);
+     })
+  }
+  
   return (
     <div>
       <div className="p-4 space-y-3 mb-6">
         <h3 className="text-3xl">Login With</h3>
-        <button className="btn btn-outline w-full">
+        <button onClick={handleGoogleSignIn} className="btn btn-outline w-full">
           <FaGoogle />
           Login with Google
         </button>

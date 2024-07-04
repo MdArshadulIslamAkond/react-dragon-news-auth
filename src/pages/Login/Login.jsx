@@ -1,12 +1,14 @@
 import { Link, useLocation, useNavigate} from "react-router-dom";
 import Navbar from "../shared/Navebar/Navbar";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
+import { sendEmailVerification } from "firebase/auth";
 
 const Login = () => {
-    const {signIn, loading} = useContext(AuthContext);
+    const {signIn, loading, forgetPassword} = useContext(AuthContext);
     const location = useLocation();
     const navigate = useNavigate();
+    const emailRef = useRef(null);
     if(loading) return <p>Loading...</p>;
     const handleLogin = (e)=>{
         e.preventDefault();
@@ -22,6 +24,13 @@ const Login = () => {
         signIn(email, password)
         .then((result) => {
             console.log("User signed in successfully!", result.user);
+            if (!result.user.emailVerified){
+              alert('Please verify your email address');
+              sendEmailVerification(result.user)
+              .then(()=>{
+                alert("Please check your email and verify your account");
+              });
+            }
             // Navigate after login
             navigate(location?.state ? location.state : "/");
             
@@ -32,6 +41,28 @@ const Login = () => {
         });
 
 
+    }
+    const handleForgetPassword = () => {
+      console.log(emailRef.current)
+      const email = emailRef.current.value;
+      if (!email) {
+        console.log("Please provide email", emailRef.current.value);
+        return;
+      } else if (
+        !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+      ) {
+        console.log("please write a valid email address");
+        return;
+      }
+      // reset password
+      forgetPassword(email)
+      .then(() => {
+        alert("Please check your Email");
+      })
+      .catch((error) => {
+        console.error("Error sending password reset email:", error);
+        
+      })
     }
   return (
     <div>
@@ -45,6 +76,7 @@ const Login = () => {
             </label>
             <input
               name="email"
+              ref={emailRef}
               type="email"
               placeholder="Email"
               className="input input-bordered"
@@ -63,7 +95,7 @@ const Login = () => {
               required
             />
             <label className="label">
-              <a href="#" className="label-text-alt link link-hover">
+              <a onClick={handleForgetPassword} href="#" className="label-text-alt link link-hover">
                 Forgot password?
               </a>
             </label>

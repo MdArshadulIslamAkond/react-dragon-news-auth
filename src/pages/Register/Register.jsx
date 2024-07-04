@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../shared/Navebar/Navbar";
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
+import { sendEmailVerification } from "firebase/auth";
 
 
 const Register = () => {
@@ -32,6 +33,10 @@ const Register = () => {
         createUser(email, password)
         .then((result)=>{
             console.log("User created successfully:", result.user);
+            sendEmailVerification(result.user)
+            .then(()=>{
+                alert("Please check your email and verify your account");
+            })
         })
         .catch(error=>{
             console.error("Error creating user:", error);
