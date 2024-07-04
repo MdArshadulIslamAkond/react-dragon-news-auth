@@ -7,7 +7,16 @@ import { useContext } from "react";
 import { AuthContext } from "../../../providers/AuthProvider";
 
 const RightSideNav = () => {
-  const {signInWithGoogle} = useContext(AuthContext)
+  const {signInWithGoogle, signInWithGithub} = useContext(AuthContext)
+  const handleGithubSignIn =()=>{
+    signInWithGithub()
+     .then(result=>{
+       console.log(result.user);
+     })
+     .catch(error=>{
+       console.error(error);
+     })
+  }
   const handleGoogleSignIn =()=>{
     signInWithGoogle()
      .then(result=>{
@@ -26,7 +35,7 @@ const RightSideNav = () => {
           <FaGoogle />
           Login with Google
         </button>
-        <button className="btn btn-outline w-full">
+        <button onClick={handleGithubSignIn} className="btn btn-outline w-full">
           <FaGithub />
           Login with Github
         </button>

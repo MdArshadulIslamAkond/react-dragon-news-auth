@@ -43,7 +43,7 @@ const Login = () => {
 
     }
     const handleForgetPassword = () => {
-      console.log(emailRef.current)
+      // console.log(emailRef.current)
       const email = emailRef.current.value;
       if (!email) {
         console.log("Please provide email", emailRef.current.value);
